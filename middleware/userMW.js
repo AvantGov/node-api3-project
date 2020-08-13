@@ -3,7 +3,7 @@ const users = require('../users/userDb')
 
 function validateUserId() {
     return (req, res, next) => {
-		users.findById(req.params.id)
+		users.getById(req.params.id)
 			.then((response) => {
 				if (response) {
 					req.user = response
