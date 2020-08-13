@@ -8,8 +8,16 @@ const { restart } = require('nodemon');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  // do your magic!
+router.post('/', validateUser(), (req, res) => {
+  users.insert(req.body)
+    .then((response) => {
+      console.log(response)
+      res.status(200).json({ message: 'user record added' })
+    })
+    .catch((error) => {
+      console.log(error)
+      res.status(401).json({ message: 'user add feature unavailable' })
+    })
 });
 
 router.post('/:id/posts', (req, res) => {
@@ -48,8 +56,22 @@ router.get('/:id/posts', validateUserId(), (req, res) => {
 
 });
 
-router.delete('/:id', (req, res) => {
-  // do your magic!
+router.delete('/:id', validateUserId(), (req, res) => {
+    
+  if (!req.user) {
+    res.status(404).json({ message: 'user not found' })
+  }
+  
+    users.remove(req.params.id)
+      .then((response) => {
+        console.log(response)
+        res.status(200).json({ message: 'user deleted'})
+      })
+      .catch((error) => {
+        console.log(error)
+        res.status(401).json({ message: 'unable to make request' })
+      })
+      
 });
 
 router.put('/:id', (req, res) => {
